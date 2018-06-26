@@ -2,7 +2,7 @@ from django.test import TestCase
 from .models import BucketList
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.urls import reverse
+from django.urls import reverse 
 # Create your tests here.
 
 class ModelTestCase(TestCase):
@@ -24,7 +24,7 @@ class ViewTestCase(TestCase):
         self.client = APIClient()
         self.bucket_list_data = {'name':'TEST'}
         self.response = self.client.post(
-            reverse('create'),
+            reverse('home'),
             self.bucket_list_data,
             format = "json"
         ) 
@@ -37,8 +37,7 @@ class ViewTestCase(TestCase):
 
         get_bucketlist = BucketList.objects.get()
         response = self.client.get(
-            reverse('details'),
-            kwargs={"pk":get_bucketlist.id},
+            reverse('details',kwargs={"pk":get_bucketlist.id}),
             format="json"
         )
 
@@ -46,7 +45,7 @@ class ViewTestCase(TestCase):
         self.assertContains(response,get_bucketlist)
 
     def testApiUpdateDetails(self):
-        
+        bucketlist = BucketList.objects.get()
         change_bucketlist = {'name': 'Something'}
         response = self.client.put(
             reverse('details', kwargs={'pk': bucketlist.id}),
@@ -58,7 +57,7 @@ class ViewTestCase(TestCase):
     def testApiDeleteDetails(self):
         delete_bucketlist= BucketList.objects.get()
         response = self.client.delete(
-            reverse('details', kwargs={'pk': bucketlist.id}),
+            reverse('details', kwargs={'pk': delete_bucketlist.id}),
             format='json',
             follow=True
         )
