@@ -16,3 +16,17 @@ class ModelTestCase(TestCase):
         self.bucket_list.save()
         newCount = BucketList.objects.count()
         self.assertNotEqual(oldCount,newCount)
+
+class ViewTestCase(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.bucket_list_data = {'name':'TEST'}
+        self.response = self.client.post(
+            reverse('create'),
+            self.bucket_list_data,
+            format = "json"
+        ) 
+
+    def testApiCreateBucketList(self):
+        self.assertEqual(self.response.status_code,status.HTTP_201_CREATED)
