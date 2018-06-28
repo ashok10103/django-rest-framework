@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django.contrib.gis',
+    'leaflet',
     'rest_api_app',
 ]
 
@@ -78,8 +80,12 @@ WSGI_APPLICATION = 'django_rest_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+       'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'locationmapping',
+        'USER': "postgisadmin",
+        'PASSWORD': "ashok",
+        'HOST':'localhost',
+        'PORT':'5432',
     }
 }
 
@@ -124,6 +130,15 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER':(10.9960612,76.9677666),
+    'DEFAULT_ZOOM':12,
+    'MIN_ZOOM':2,
+    'MAX_ZOOM':20,
+    'SCALE':'metric',
+    'ATTRIBUTION_PREFIX':'Powered by Desmoslab Pvt ltd',
+}
 
 
 # Static files (CSS, JavaScript, Images)

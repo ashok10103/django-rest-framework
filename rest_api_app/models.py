@@ -3,7 +3,8 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
-
+from django.db.models import Manager as GeoManager
+from django.contrib.gis.db import models as gis_models
 # Create your models here.
 class BucketList(models.Model):
     name = models.CharField(max_length=250,blank=False,unique=True)
@@ -27,15 +28,19 @@ class DoctorList(models.Model):
     available_timing = models.CharField(max_length=50,blank=False,null=True)
     rating_percentage = models.CharField(max_length=10,blank=False,null=True)
     votes = models.CharField(max_length=4,blank=False,null=True)
-    images = models.CharField(max_length=500,blank=True,null=True)    
+    images = models.CharField(max_length=500,blank=True,null=True) 
+    location = models.CharField(max_length=500,blank=False,null=True)
+    location_coords = gis_models.PointField(max_length=500,blank=False,null=True)   
+    objects = GeoManager()
+
+
+    class Meta:
+        verbose_name_plural = "DoctorsList"    
 
     def __str__(self):
         return self.doctor_name
+    
 
-    
-    
-    
-    
 
 
 @receiver(post_save, sender=User)
