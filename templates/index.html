@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    {% load static %} {% load leaflet_tags %}
+
+    <head>
+        {% leaflet_js %} {% leaflet_css %}
+        <title>Welcome</title>
+        <style>
+        .input-container {
+            text-align: center;
+        }
+
+        div#gis {
+            height: 500px;
+            margin: 20px;
+        }
+
+        input {
+            box-sizing: border-box;
+            border: 1px solid transparent;
+            width: 270px;
+            height: 37px;
+            padding: 0 12px;
+            border-radius: 3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            outline: none;
+            text-overflow: ellipses;
+        }     
+        </style>
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkZ9OBTQXV_tgDqR3N5p8LqBTLfelDY1E&libraries=places"></script>
+        <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'dist/leaflet.ajax.js' %}"></script>
+    </head>
+    <body>
+        <br /> {% csrf_token %}
+        <div class="input-container">
+            <input type="text" name="address" id="address" placeholder="enter your address" oninput="getLocation()" />
+            <!-- <input type="number" name="radius" id="radius" step="any"
+                placeholder="enter radius"> -->            
+        </div>
+        <script type="text/javascript">
+        let mymap;
+        let add;             
+        window.addEventListener("map:init", function (e) {
+            var detail = e.detail;
+            mymap = detail
+        }, false);
+
+        function getData(addr) {
+            address = addr
+            $.ajax({
+                url: `https://maps.googleapis.com/maps/api/geocode/json?address={${address}}&key=AIzaSyBsWAX9Qnw00FuKFHFhFLePluscku_fU3I`,
+                type: `GET`,
+                headers:{
+                    "Access-Control-Allow-Origin":'*',
+                    "Access-Control-Allow-Credentials": "true"                   
+            },
+                contentType: 'application/json;charset=utf-8',
+                success: function (response) {
+                    lat = response.results[0].geometry.location.lat
+                    lon = response.results[0].geometry.location.lng
+                    addr = response.results[0].formatted_address
+                    console.log(lat, lon, addr)
+                    add = addr
+                    if (lat && lon)
+                        drawMap(lat, lon)
+                }
+            })        
+
+        }
+
+        function drawMap(latitude, longitude) {
+            let csrftoken = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+            console.log(csrftoken)
+            lat = latitude
+            lon = longitude
+            rad = 7
+            $.ajax({
+                url: "{% url 'data' %}" + "?latitude=" + lat + "&longitude=" + lon + "&radius=" + rad,
+                type: 'POST',
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                contentType: 'application/json;charset=utf-8',
+                success: function (response) {
+                    response.features.map((map) => {
+                        Lat = map.geometry.coordinates[1]
+                        Lon = map.geometry.coordinates[0]
+                        L.marker([Lat, Lon],{draggable:'true'}).addTo(mymap.map)
+                    })
+                },
+
+            })
+        }
+
+        function getLocation() {          
+            input = document.getElementById('address')
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.addListener('place_changed', function() {         
+            var place = autocomplete.getPlace();
+            addr=place.formatted_address           
+            if(addr)
+                getData(addr)
+            })
+        }
+        </script>
+
+        {% leaflet_map "gis" %}
+        <!-- callback="window.layers" -->       
+    </body>
+</html>
