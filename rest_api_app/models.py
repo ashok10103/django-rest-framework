@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from django.db.models import Manager as GeoManager
 from django.contrib.gis.db import models as gis_models
+
 # Create your models here.
 class BucketList(models.Model):
     name = models.CharField(max_length=250,blank=False,unique=True)
@@ -29,13 +30,11 @@ class DoctorList(models.Model):
     rating_percentage = models.CharField(max_length=10,blank=False,null=True)
     votes = models.CharField(max_length=4,blank=False,null=True)
     images = models.CharField(max_length=500,blank=True,null=True) 
-    location = models.CharField(max_length=500,blank=False,null=True)
-    location_coords = gis_models.PointField(max_length=500,blank=False,null=True)   
+    location_coords = gis_models.PointField(max_length=500,blank=False,null=True)     
     objects = GeoManager()
 
-
     class Meta:
-        verbose_name_plural = "DoctorsList"    
+        verbose_name_plural = "DoctorsList"       
 
     def __str__(self):
         return self.doctor_name
@@ -48,3 +47,4 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
   if created:
     Token.objects.create(user=instance)
     
+
