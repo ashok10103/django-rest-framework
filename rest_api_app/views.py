@@ -55,14 +55,20 @@ class DoctorListDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 def get_data(request):    
     
+    print(request)
 
-    if lat and lng and radius is not None:
-        lat = float(request.GET.get('latitude'))
-        lng = float(request.GET.get('longitude'))
-        radius = int(request.GET.get('radius'))      
-        point = Point(lng, lat)      
-        data = serialize('geojson',DoctorList.objects.filter(location__distance_lt=(point, Distance(km=radius))))    
-        # data = serialize('geojson',Location.objects.all())
-        return HttpResponse(data,content_type='json')
+    # if lat and lng and radius is not None:
+    lat = float(request.GET.get('latitude'))
+    lng =float(request.GET.get('longitude'))     
+    radius = int(request.GET.get('radius'))
+    print(radius)   
+    point = Point(lat,lng)
+    print(point)   
+    data = serialize('geojson',DoctorList.objects.filter(location_coords__distance_lt=(point, Distance(km=radius))))
+    print(data)   
+    # data = serialize('geojson',DoctorList.objects.all())
+    # print(data)   
+    
+    return HttpResponse(data,content_type='json')
 
     

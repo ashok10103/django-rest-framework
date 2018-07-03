@@ -63,7 +63,7 @@
                     lat = response.results[0].geometry.location.lat
                     lon = response.results[0].geometry.location.lng
                     addr = response.results[0].formatted_address
-                    console.log(lat, lon, addr)
+                    // console.log(lat, lon, addr)
                     add = addr
                     if (lat && lon)
                         drawMap(lat, lon)
@@ -77,9 +77,10 @@
             console.log(csrftoken)
             lat = latitude
             lon = longitude
-            rad = 7
+            rad = 10
             $.ajax({
-                url: "{% url 'data' %}" + "?latitude=" + lat + "&longitude=" + lon + "&radius=" + rad,
+                url: "{% url 'data' %}" + "?&latitude=" + lat + "&longitude=" + lon + "&radius=" + rad,
+                // url: "{% url 'doctor' %}",                
                 type: 'POST',
                 dataType: 'json',
                 headers: {
@@ -88,11 +89,11 @@
                 contentType: 'application/json;charset=utf-8',
                 success: function (response) {
                     console.log(response)
-                    response.features.map((map) => {
-                        Lat = map.geometry.coordinates[1]
-                        Lon = map.geometry.coordinates[0]
-                        L.marker([Lat, Lon],{draggable:'true'}).addTo(mymap.map)
-                    })
+                    // response.features.map((map) => {
+                    //     Lat = map.geometry.coordinates[1]
+                    //     Lon = map.geometry.coordinates[0]
+                    //     L.marker([Lat, Lon],{draggable:'true'}).addTo(mymap.map)
+                    // })
                 },
 
             })
