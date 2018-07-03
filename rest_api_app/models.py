@@ -30,7 +30,7 @@ class DoctorList(models.Model):
     rating_percentage = models.CharField(max_length=10,blank=False,null=True)
     votes = models.CharField(max_length=4,blank=False,null=True)
     images = models.CharField(max_length=500,blank=True,null=True) 
-    location_coords = gis_models.PointField(max_length=500,blank=False,null=True)     
+    location_coords = gis_models.PointField(srid=4326)     
     objects = GeoManager()
 
     class Meta:
