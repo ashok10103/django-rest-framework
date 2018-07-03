@@ -13,9 +13,7 @@ urlpatterns = [
       url(r'^data/$',get_data,name="data"),         
       url(r'^auth/',include('rest_framework.urls',namespace='rest_framework')), 
       url(r'^doctors/$', DoctorListView.as_view(), name="doctor"),
-      url(r'doctors/(?P<pk>[0-9]+)/$',DoctorListDetailsView.as_view(), name="doctor_details"),
-      # url(r'doctors/(?P<votes>[0-9]+)/$',DoctorListDetailsView.as_view(), name="doctor_details"),
-      
+      url(r'doctors/(?P<pk>[0-9]+)/$',DoctorListDetailsView.as_view(), name="doctor_details"),      
       url(r'^bucketlists/$', HomeView.as_view(), name="home"),
       url(r'^bucketlists/(?P<pk>[0-9]+)/$',DetailsView.as_view(), name="details"),
       url(r'^get-token/', obtain_auth_token),

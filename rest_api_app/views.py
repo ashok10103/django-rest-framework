@@ -14,15 +14,10 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
 
 
-
-
 # Create your views here.
-
 
 class HomePageView(TemplateView):
     template_name = 'index.html'
-
-
 
 class HomeView(generics.ListCreateAPIView):
     queryset = BucketList.objects.all()
@@ -31,7 +26,6 @@ class HomeView(generics.ListCreateAPIView):
 
     def perform_create(self,serializer):
         serializer.save(owner=self.request.user)
-
 
 class DetailsView(generics.RetrieveUpdateDestroyAPIView):
        queryset = BucketList.objects.all()
@@ -49,26 +43,17 @@ class DoctorListView(generics.ListCreateAPIView):
 class DoctorListDetailsView(generics.RetrieveUpdateDestroyAPIView):
        queryset = DoctorList.objects.all()
        serializer_class = DoctorListSerializer
-       permission_classes = (permissions.IsAuthenticated, IsOwner)     
+       permission_classes = (permissions.IsAuthenticated, IsOwner)
 
-
-
-def get_data(request):    
-    
-    print(request)
-
-    # if lat and lng and radius is not None:
+def get_data(request):
+        
     lat = float(request.GET.get('latitude'))
     lng =float(request.GET.get('longitude'))     
-    radius = int(request.GET.get('radius'))
-    print(radius)   
-    point = Point(lat,lng)
-    print(point)   
-    data = serialize('geojson',DoctorList.objects.filter(location_coords__distance_lt=(point, Distance(km=radius))))
-    print(data)   
-    # data = serialize('geojson',DoctorList.objects.all())
-    # print(data)   
-    
+    radius = int(request.GET.get('radius'))         
+    point = Point(lng,lat)
+    data = serialize('geojson',DoctorList.objects.filter(location_coords__distance_lte=(point, Distance(km=radius)))) 
+    # data = serialize('geojson',DoctorList.objects.all())      
     return HttpResponse(data,content_type='json')
 
-    
+
+
